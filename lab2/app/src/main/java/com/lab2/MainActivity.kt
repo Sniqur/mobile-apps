@@ -31,6 +31,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/** Simple in-memory model for a task */
 data class Task(
     val id: String = UUID.randomUUID().toString(),
     val title: String,
@@ -131,9 +132,6 @@ fun TodoApp() {
                             onToggleDone = { id ->
                                 val idx = tasks.indexOfFirst { it.id == id }
                                 if (idx != -1) tasks[idx] = tasks[idx].copy(done = !tasks[idx].done)
-                            },
-                            onDelete = { id ->
-                                tasks.removeAll { it.id == id }
                             }
                         )
                     }
@@ -147,8 +145,7 @@ fun TodoApp() {
 @Composable
 private fun TaskRow(
     task: Task,
-    onToggleDone: (String) -> Unit,
-    onDelete: (String) -> Unit
+    onToggleDone: (String) -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -193,14 +190,11 @@ private fun TaskRow(
                     )
                 }
             }
-
-            TextButton(onClick = { onDelete(task.id) }) {
-                Text("Delete")
-            }
         }
     }
 }
 
+/* ---------- Compose Previews ---------- */
 
 @Preview(
     name = "Dark",
