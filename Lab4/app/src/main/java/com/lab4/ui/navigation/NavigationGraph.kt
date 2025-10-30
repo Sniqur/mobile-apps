@@ -23,8 +23,9 @@ data class SubjectDetailsRoute(val id: Int) : NavKey
 fun NavigationGraph(
     modifier: Modifier = Modifier,
 ) {
+    // Back stack that holds screens; start destination is SubjectsListRoute
     val backStack = rememberNavBackStack(SubjectsListRoute)
-
+    // NavDisplay renders the top of the back stack
     NavDisplay(
         modifier = modifier,
         backStack = backStack,
@@ -32,6 +33,7 @@ fun NavigationGraph(
             rememberSavedStateNavEntryDecorator(),
             rememberSceneSetupNavEntryDecorator()
         ),
+        // Map: route key -> Composable content to show
         entryProvider = entryProvider {
             entry<SubjectsListRoute> {
                 SubjectsListScreen(
@@ -40,6 +42,7 @@ fun NavigationGraph(
                     }
                 )
             }
+            // Subject details screen; receives strongly-typed route args
             entry<SubjectDetailsRoute> { route -> SubjectDetailsScreen(route) }
         }
     )

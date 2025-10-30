@@ -52,98 +52,115 @@ object DatabaseStorage {
             }
     }
 
+    // Add initial data only if subjects table is empty.
+
     private fun preloadData() {
         val db = _database ?: return
 
+        // Subject & Labs itself
         val subjects = listOf(
-            com.lab4.data.entity.SubjectEntity(
-                title = "Операційні системи",
+            SubjectEntity(
+                title = "Розгортання ІКС",
                 status = SubjectStatus.IN_PROGRESS
             ),
-            com.lab4.data.entity.SubjectEntity(
-                title = "Комп’ютерні мережі",
-                status = SubjectStatus.IN_PROGRESS
-            ),
-            com.lab4.data.entity.SubjectEntity(
-                title = "Мобільна розробка",
+            SubjectEntity(
+                title = "Проектування ІКС",
                 status = SubjectStatus.NOT_STARTED
             ),
-            com.lab4.data.entity.SubjectEntity(
-                title = "Бази даних",
+            SubjectEntity(
+                title = "Програмування Мобільних додатків",
+                status = SubjectStatus.IN_PROGRESS
+            ),
+            SubjectEntity(
+                title = "Мережева Безпека",
                 status = SubjectStatus.POSTPONED,
                 comment = "Чекаю матеріали від викладача"
             ),
-            com.lab4.data.entity.SubjectEntity(
-                title = "Алгоритми та структури даних",
+            SubjectEntity(
+                title = "Економіка та підприємництво",
                 status = SubjectStatus.COMPLETED
             ),
         )
 
         coroutineScope.launch {
             try {
-                val subjectIds = db.subjectsDao.addSubjects(subjects)
-                val idOs     = subjectIds.getOrNull(0)?.toInt() ?: 1
-                val idNet    = subjectIds.getOrNull(1)?.toInt() ?: 2
-                val idMobile = subjectIds.getOrNull(2)?.toInt() ?: 3
-                val idDb     = subjectIds.getOrNull(3)?.toInt() ?: 4
-                val idAlgo   = subjectIds.getOrNull(4)?.toInt() ?: 5
+                // If there is at least one subject - skip initial add
+                val count = db.subjectsDao.getSubjectsCount()
+                if (count > 0) return@launch
 
+                val subjectIds = db.subjectsDao.addSubjects(subjects)
+                val idOs   = subjectIds.getOrNull(0)?.toInt() ?: 1   // Розгортання ІКС
+                val idNet  = subjectIds.getOrNull(1)?.toInt() ?: 2   // Проектування ІКС
+                val idMob  = subjectIds.getOrNull(2)?.toInt() ?: 3   // Програмування Мобільних додатків
+                val idSec  = subjectIds.getOrNull(3)?.toInt() ?: 4   // Мережева Безпека
+                val idBiz  = subjectIds.getOrNull(4)?.toInt() ?: 5   // Економіка та підприємництво
+
+                // 🔹 Names of Labs
                 val labs = listOf(
-                    com.lab4.data.entity.SubjectLabEntity(
+                    // Розгортання ІКС
+                    SubjectLabEntity(
                         subjectId = idOs,
-                        title = "Лаб1: Процеси та потоки",
-                        description = "Створення та синхронізація потоків",
+                        title = "Докер: Вступ",
+                        description = "Hello World Container",
                         status = LabStatus.COMPLETED,
                         comment = "Перевірено викладачем"
                     ),
-                    com.lab4.data.entity.SubjectLabEntity(
+                    SubjectLabEntity(
                         subjectId = idOs,
-                        title = "Лаб2: Планування",
-                        description = "Алгоритми планування CPU",
+                        title = "Докер Компоуз",
+                        description = "Створюємо мультиконтейнерний додаток",
                         status = LabStatus.IN_PROGRESS
                     ),
-                    com.lab4.data.entity.SubjectLabEntity(
+
+                    // Проектування ІКС
+                    SubjectLabEntity(
                         subjectId = idNet,
                         title = "Лаб1: Сабнеттінг",
                         description = "IPv4/IPv6, маски, підмережі",
                         status = LabStatus.IN_PROGRESS
                     ),
-                    com.lab4.data.entity.SubjectLabEntity(
+                    SubjectLabEntity(
                         subjectId = idNet,
                         title = "Лаб2: Маршрутизація",
                         description = "Статика/динаміка, таблиці",
                         status = LabStatus.NOT_STARTED,
                         comment = "Почати після Лаб1"
                     ),
-                    com.lab4.data.entity.SubjectLabEntity(
-                        subjectId = idMobile,
-                        title = "Лаб1: Compose basics",
+
+                    // Програмування Мобільних додатків
+                    SubjectLabEntity(
+                        subjectId = idMob,
+                        title = "Kotlin: Вступ",
                         description = "Списки, стани, навігація",
                         status = LabStatus.NOT_STARTED
                     ),
-                    com.lab4.data.entity.SubjectLabEntity(
-                        subjectId = idDb,
-                        title = "Лаб1: SQL основи",
-                        description = "SELECT/INSERT/UPDATE/DELETE",
+
+                    // Мережева Безпека
+                    SubjectLabEntity(
+                        subjectId = idSec,
+                        title = "Encryption: Вступ",
+                        description = "MFA,2FA",
                         status = LabStatus.POSTPONED,
                         comment = "Потрібна консультація"
                     ),
-                    com.lab4.data.entity.SubjectLabEntity(
-                        subjectId = idDb,
-                        title = "Лаб2: ORM/Room",
-                        description = "Entities, DAO, Converters, Relations",
+                    SubjectLabEntity(
+                        subjectId = idSec,
+                        title = "Security: WI-FI Tower",
+                        description = "Як не втрапити в пастку зловмисника",
                         status = LabStatus.NOT_STARTED
                     ),
-                    com.lab4.data.entity.SubjectLabEntity(
-                        subjectId = idAlgo,
-                        title = "Лаб1: Сортування",
-                        description = "Quick/Merge/Heap sort",
+
+                    // Економіка та підприємництво
+                    SubjectLabEntity(
+                        subjectId = idBiz,
+                        title = "Data Science",
+                        description = "Як рахувати прибуток",
                         status = LabStatus.COMPLETED
                     ),
-                    com.lab4.data.entity.SubjectLabEntity(
-                        subjectId = idAlgo,
+                    SubjectLabEntity(
+                        subjectId = idBiz,
                         title = "Лаб2: Графи",
-                        description = "BFS/DFS, shortest paths",
+                        description = "Як будувати інформативні графи",
                         status = LabStatus.COMPLETED
                     ),
                 )

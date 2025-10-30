@@ -7,11 +7,10 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.lab4.data.model.LabStatus
 
-/**
- * SubjectLabEntity - the data class which represents the `subjectsLabs` table
- * - replaces boolean flags with single status
- * - keeps optional comment
- */
+//  SubjectLabEntity - the data class which represents the `subjectsLabs` table
+//  replaces boolean flags with single status
+//  keeps optional comment
+
 @Entity(
     tableName = "subjectsLabs",
     indices = [Index(value = ["subject_id"])],

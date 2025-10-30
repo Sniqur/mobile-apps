@@ -8,9 +8,9 @@ import androidx.room.Update
 import com.lab4.data.entity.SubjectLabEntity
 import com.lab4.data.model.LabStatus
 
-/**
- * SubjectLabsDao - interface of communication with `subjectsLabs` table
- */
+
+// SubjectLabsDao - interface of communication with `subjectsLabs` table
+
 @Dao
 interface SubjectLabsDao {
     // fetch all labs

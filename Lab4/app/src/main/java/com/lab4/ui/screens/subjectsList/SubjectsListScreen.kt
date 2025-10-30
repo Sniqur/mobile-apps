@@ -43,7 +43,7 @@ fun SubjectsListScreen(
         labsState.value = db.subjectLabsDao.getAllSubjectLabs()
     }
 
-    // Побудуємо мапу прогресу: subjectId -> Pair(completed, total)
+    // The map of progress: subjectId -> Pair(completed, total)
     val progressBySubject = remember(subjectsState.value, labsState.value) {
         labsState.value.groupBy { it.subjectId }.mapValues { (_, labs) ->
             val total = labs.size.coerceAtLeast(1) // щоб не ділити на нуль
@@ -97,7 +97,7 @@ private fun SubjectCardRow(
             )
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Назва
+            // Name
             Text(
                 text = subject.title,
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
@@ -105,13 +105,13 @@ private fun SubjectCardRow(
 
             Spacer(Modifier.height(6.dp))
 
-            // Статус предмету
+            // Status
             Text(
                 text = "Статус: ${subject.status.name.replace('_', ' ')}",
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            // Коментар (якщо є)
+            // Comment (Optional)
             subject.comment?.takeIf { it.isNotBlank() }?.let {
                 Spacer(Modifier.height(4.dp))
                 Text(
@@ -122,7 +122,7 @@ private fun SubjectCardRow(
 
             Spacer(Modifier.height(10.dp))
 
-            // Прогрес
+            // Progress
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -143,9 +143,8 @@ private fun SubjectCardRow(
     }
 }
 
-/**
- * Preview без БД
- */
+
+
 @Preview(showBackground = true)
 @Composable
 private fun SubjectsListScreenPreview() {

@@ -25,7 +25,6 @@ private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
     tertiary = Pink40
-    /* інші кольори за потреби */
 )
 
 @Composable
@@ -48,7 +47,6 @@ fun Lab4Theme(
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.primary.toArgb()
-            // Важливо: темні іконки у світлій темі, світлі — у темній
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }

@@ -31,7 +31,7 @@ fun SubjectDetailsScreen(
     val subjectState = remember { mutableStateOf<SubjectEntity?>(null) }
     val subjectLabsState = remember { mutableStateOf<List<SubjectLabEntity>>(emptyList()) }
 
-    // Локальні стани для редагування
+    // Local states for modifying
     val subjectStatus = remember { mutableStateOf(SubjectStatus.NOT_STARTED) }
     val subjectComment = remember { mutableStateOf("") }
 
@@ -51,7 +51,7 @@ fun SubjectDetailsScreen(
     ) {
         Text(text = "Дисципліна", fontSize = 28.sp, fontWeight = FontWeight.SemiBold)
 
-        // Блок дисципліни
+        // Subject Block
         SubjectEditorCard(
             status = subjectStatus.value,
             onStatusChange = { subjectStatus.value = it },
@@ -83,7 +83,7 @@ fun SubjectDetailsScreen(
                 items = subjectLabsState.value,
                 key = { it.id ?: it.title.hashCode() }
             ) { lab ->
-                // Локальний стан по кожній лабі
+                // Local state for every Lab work
                 var labStatus by remember(lab.id) { mutableStateOf(lab.status) }
                 var labComment by remember(lab.id) { mutableStateOf(lab.comment ?: "") }
 
@@ -128,7 +128,7 @@ private fun SubjectEditorCard(
             Text(text = title, style = MaterialTheme.typography.titleMedium)
             Spacer(Modifier.height(8.dp))
 
-            // Dropdown статусу
+            // Dropdown thingy
             SubjectStatusDropdown(status = status, onStatusChange = onStatusChange)
 
             Spacer(Modifier.height(8.dp))
@@ -241,9 +241,7 @@ private fun LabStatusDropdown(
     }
 }
 
-/**
- * Preview: без доступу до БД
- */
+
 @Preview(showBackground = true)
 @Composable
 private fun SubjectDetailsScreenPreview() {

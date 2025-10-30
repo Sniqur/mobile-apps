@@ -8,9 +8,9 @@ import androidx.room.Update
 import com.lab4.data.entity.SubjectEntity
 import com.lab4.data.model.SubjectStatus
 
-/**
- * SubjectDao - interface of communication with `subjects` table
- */
+
+//  SubjectDao - interface of communication with `subjects` table
+
 @Dao
 interface SubjectDao {
     // fetch all subjects
@@ -20,6 +20,10 @@ interface SubjectDao {
     // fetch single Subject by id
     @Query("SELECT * FROM subjects WHERE id = :id")
     suspend fun getSubjectById(id: Int): SubjectEntity?
+
+    // count (для ідемпотентного сидування)
+    @Query("SELECT COUNT(*) FROM subjects")
+    suspend fun getSubjectsCount(): Int
 
     // insert/replace Subject (return generated id)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
