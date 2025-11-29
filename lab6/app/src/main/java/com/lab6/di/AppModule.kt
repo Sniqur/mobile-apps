@@ -40,8 +40,6 @@ val appModule = module {
 
     // API Key - Replace with your actual API key
     single<String> {
-        // TODO: Replace with your OpenWeatherMap API key
-        // Get it from: https://openweathermap.org/api
         "8889c1feba30ba15f018e6919a6bc4e2"
     }
 
