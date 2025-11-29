@@ -9,19 +9,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import androidx.compose.foundation.layout.padding
-// Два "екрани"
-sealed class Screen {
-    object List : Screen()
-    data class Detail(val item: Destination) : Screen()
-}
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,19 +24,27 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+// Navigation routes
+object Routes {
+    const val LIST = "list"
+    const val DETAIL = "detail/{destinationId}"
+    
+    fun detail(destinationId: Int) = "detail/$destinationId"
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TourismApp() {
-    var screen: Screen by remember { mutableStateOf(Screen.List) }
+    val navController = rememberNavController()
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = when (screen) {
-                            is Screen.List -> "Популярні місця України"
-                            is Screen.Detail -> "Деталі місця"
+                        text = when (navController.currentDestination?.route) {
+                            Routes.LIST -> "Популярні місця України"
+                            else -> "Деталі місця"
                         },
                         style = MaterialTheme.typography.titleMedium
                     )
@@ -50,22 +52,33 @@ fun TourismApp() {
             )
         }
     ) { innerPadding ->
-        when (val s = screen) {
-            is Screen.List -> DestinationsListScreen(
-                items = demoDestinations,
-                onItemClick = { clicked -> screen = Screen.Detail(clicked) },
-                modifier = Modifier.padding(innerPadding)
-            )
-            is Screen.Detail -> DestinationDetailScreen(
-                item = s.item,
-                onBack = { screen = Screen.List },
-                modifier = Modifier.padding(innerPadding)
-            )
+        NavHost(
+            navController = navController,
+            startDestination = Routes.LIST,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable(Routes.LIST) {
+                DestinationsListScreen(
+                    items = demoDestinations,
+                    navController = navController
+                )
+            }
+            composable(Routes.DETAIL) { backStackEntry ->
+                val destinationId = backStackEntry.arguments?.getString("destinationId")?.toIntOrNull()
+                val destination = demoDestinations.find { it.id == destinationId }
+                
+                if (destination != null) {
+                    DestinationDetailScreen(
+                        item = destination,
+                        navController = navController
+                    )
+                }
+            }
         }
     }
 }
 
-/** Preview головного UI */
+/** Preview Of main UI */
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun TourismAppPreview() {
