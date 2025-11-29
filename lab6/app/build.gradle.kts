@@ -5,15 +5,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.lab6"
-    compileSdk {
-        version = release(36)
-    }
+    namespace = "com.lab6"
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.lab6"
-        minSdk = 36
-        targetSdk = 36
+        applicationId = "com.lab6"
+        minSdk = 29
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
@@ -57,4 +55,18 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    
+    // ViewModel
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    
+    // Koin DI
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+    
+    // Retrofit for API calls
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
 }
