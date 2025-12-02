@@ -6,11 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.lab7.ui.screens.GameScreen
+import com.example.lab7.ui.screens.WelcomeScreen
 import com.example.lab7.ui.theme.Lab7Theme
 
 class MainActivity : ComponentActivity() {
@@ -19,11 +24,11 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Lab7Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    TriviaApp()
                 }
             }
         }
@@ -31,17 +36,30 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+fun TriviaApp() {
+    val navController = rememberNavController()
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    Lab7Theme {
-        Greeting("Android")
+    NavHost(
+        navController = navController,
+        startDestination = "welcome"
+    ) {
+        composable("welcome") {
+            WelcomeScreen(
+                onTopicSelected = { topic ->
+                    val encodedTopic = java.net.URLEncoder.encode(topic, "UTF-8")
+                    navController.navigate("game/$encodedTopic")
+                }
+            )
+        }
+        composable("game/{topic}") { backStackEntry ->
+            val encodedTopic = backStackEntry.arguments?.getString("topic") ?: ""
+            val topic = java.net.URLDecoder.decode(encodedTopic, "UTF-8")
+            GameScreen(
+                topic = topic,
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
     }
 }
